@@ -31,7 +31,7 @@ export default function App() {
       const res=await fetch("/api/analyze",{
         method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
-          model:"claude-sonnet-4-6",max_tokens:1200,
+          max_tokens:1200,
           system:`Jestes ekspertem od modeli jezykowych (LLM) i piszesz ZAWSZE PO POLSKU.
 
 ZASADY BEZWZGLEDNE:
@@ -69,6 +69,10 @@ FORMAT - dokladnie taki:
         }),
       });
       const data=await res.json();
+      if(!res.ok){
+        const message=data?.error?.message||data?.error||`API error ${res.status}`;
+        throw new Error(message);
+      }
       const text=data.content?.find(b=>b.type==="text")?.text||"Błąd odpowiedzi — brak treści w odpowiedzi API.";
       setCache(p=>({...p,[llm.id]:text}));setSel({llm,result:text});
     }catch(e){setSel({llm,result:"## OPIS\nBłąd połączenia z API: "+(e?.message||"nieznany błąd")+"\n\n## JAK PODPIĄĆ\nN/A\n\n## NOWOŚCI\nN/A\n\n## AGENTY\nN/A\n\n## PRZYKŁADOWE PROMPTY\nN/A"});}
