@@ -17,4 +17,13 @@ npm run build
 
 ## Environment
 
-Set `ANTHROPIC_API_KEY` in Vercel project settings. The key is used only by the serverless function at `api/analyze.js` and is never exposed to the browser.
+Set these variables in Vercel Project Settings → Environment Variables:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+ANTHROPIC_MODEL=claude-sonnet-5
+```
+
+`ANTHROPIC_MODEL` is optional. The backend defaults to `claude-sonnet-5`.
+
+The browser calls `/api/analyze`. Only the Vercel serverless function contacts Anthropic, so the API key is never exposed to the frontend. The backend also caps output tokens and ignores any client-provided model name.
